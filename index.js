@@ -1,15 +1,28 @@
 require("dotenv").config();
+const yargs = require("yargs/yargs");
 const _ = require("lodash");
 const { Alchemy, Network } = require("alchemy-sdk");
 
+const argv = yargs(process.argv.slice(2))
+  .command("$0 <contractAddress>", "fetch NFT contract metadata", (yargs) =>
+    yargs.positional("contractAddress", { type: "string", required: true }).demandOption("contractAddress")
+  )
+  .option("network", {
+    alias: "n",
+    describe: "Network",
+    choices: Object.values(Network),
+    default: Network.ETH_MAINNET,
+  })
+  .option("apiKey", { alias: "k", describe: "Alchemy API key" }).argv;
+
+const { contractAddress, network, apiKey } = argv;
+
 const settings = {
-  apiKey: process.env.ALCHEMY_API_KEY,
-  network: Network.ETH_MAINNET, // Replace with your network.
+  apiKey,
+  network,
 };
 
 const alchemy = new Alchemy(settings);
-
-const [contractAddress] = process.argv.slice(2);
 
 async function getNftsForContract(contractAddress) {
   try {
