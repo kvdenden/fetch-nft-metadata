@@ -1,0 +1,12 @@
+{
+  "name": "fetch-nft-metadata",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "alchemy-sdk": "^2.2.5",
+    "dotenv": "^16.0.3",
+    "lodash": "^4.17.21"
+  }
+}
