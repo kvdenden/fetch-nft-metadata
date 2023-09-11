@@ -2,6 +2,7 @@ require("dotenv").config();
 const yargs = require("yargs/yargs");
 const _ = require("lodash");
 const { Alchemy, Network } = require("alchemy-sdk");
+const { toCSV } = require("./util");
 
 const argv = yargs(process.argv.slice(2))
   .command("$0 <contractAddress>", "fetch NFT contract metadata", (yargs) =>
@@ -34,7 +35,7 @@ async function getNftsForContract(contractAddress) {
 
     return nfts;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 }
 
@@ -42,9 +43,12 @@ getNftsForContract(contractAddress).then((nfts) => {
   const metadata = _.chain(nfts)
     .keyBy("tokenId")
     .mapValues((nft) => {
-      const { name, image_data, attributes } = nft.rawMetadata;
-      return { name, image_data, attributes };
+      const { name, attributes } = nft.rawMetadata;
+      const image = nft.media[0].gateway;
+      return { name, image, attributes };
     })
     .value();
-  console.log(JSON.stringify(metadata, null, 2));
+
+  console.log(toCSV(metadata));
+  // console.log(JSON.stringify(metadata, null, 2));
 });
